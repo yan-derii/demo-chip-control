@@ -13,15 +13,16 @@
         <input
             #itemInput
             [formControl]="itemInputControl"
+            [matAutocomplete]="autocomplete"
             [matChipInputFor]="chipList"
             [matChipInputSeparatorKeyCodes]="[13]"
             (matChipInputTokenEnd)="addChip($event)"
             placeholder="Type here..."
         />
     </mat-chip-list>
-    <mat-autocomplete>
-        <mat-option>
-            Something Two
+    <mat-autocomplete #autocomplete="matAutocomplete" (optionSelected)="selectAutocomplete($event)">
+        <mat-option *ngFor="let suggestion of currentSuggestions | async " [value]="suggestion">
+            {{ suggestion }}
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>
