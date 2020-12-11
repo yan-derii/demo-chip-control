@@ -1,36 +1,25 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {Component, ElementRef, forwardRef, Input, OnInit, ViewChild} from '@angular/core';
+import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {Observable} from "rxjs";
 import {debounceTime, distinctUntilChanged, map, startWith} from "rxjs/operators";
 
-// Just a list of suggestions
-const SUGGESTIONS: string[] = [
-    'honda civic',
-    'honda accord',
-    'toyota supra',
-    'toyota camry',
-    'subaru wrx',
-    'subaru brz',
-    'subaru forester',
-    'bmw m5',
-    'bmw x7',
-    'bmw i8',
-    'mercedes benz',
-    'audi',
-    'chevrolet',
-    'ford',
-    'lincoln',
-    'cadillac',
-];
+const CONTROL_VALUE_ACCESSOR_PROVIDER = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ChipControlComponent),
+    multi: true,
+};
 
 @Component({
     selector: 'app-chip-control',
     templateUrl: './chip-control.component.html',
-    styleUrls: ['./chip-control.component.css']
+    styleUrls: ['./chip-control.component.css'],
+    providers: [
+        CONTROL_VALUE_ACCESSOR_PROVIDER
+    ]
 })
-export class ChipControlComponent implements OnInit {
+export class ChipControlComponent implements OnInit, ControlValueAccessor {
     items: string[] = [];
     itemInputControl = new FormControl();
 
@@ -40,9 +29,15 @@ export class ChipControlComponent implements OnInit {
     @ViewChild('autocomplete')
     matAutocomplete: MatAutocomplete;
 
-    suggestions: string[] = SUGGESTIONS;
+    @Input()
+    suggestions: string[] = [];
 
     currentSuggestions: Observable<string[]>;
+
+    private onChangeProvided: Function = () => {
+    };
+    private onTouchProvided: Function = () => {
+    };
 
     constructor() {
         this.currentSuggestions = this.itemInputControl.valueChanges.pipe(
@@ -60,7 +55,9 @@ export class ChipControlComponent implements OnInit {
         const {input, value} = event;
 
         if ((value || '').trim()) {
-            this.items.push(value.trim())
+            this.items.push(value.trim());
+            this.onChangeProvided(this.items);
+            this.onTouchProvided();
         }
 
         if (input) {
@@ -75,6 +72,8 @@ export class ChipControlComponent implements OnInit {
 
         if (index >= 0) {
             this.items.splice(index, 1);
+            this.onChangeProvided(this.items);
+            this.onTouchProvided();
         }
     }
 
@@ -82,12 +81,26 @@ export class ChipControlComponent implements OnInit {
         this.items.push(event.option.viewValue);
         this.itemInput.nativeElement.value = '';
         this.itemInputControl.setValue(null);
+        this.onChangeProvided(this.items);
+        this.onTouchProvided();
     }
 
     filterSuggestions(input: string) {
         return this.suggestions.filter(
             suggestion => suggestion.toLowerCase().startsWith(input.trim().toLowerCase())
         );
+    }
+
+    registerOnChange(fn: any): void {
+        this.onChangeProvided = fn;
+    }
+
+    registerOnTouched(fn: any): void {
+        this.onTouchProvided = fn;
+    }
+
+    writeValue(obj: any): void {
+        this.items = [...obj];
     }
 
 }

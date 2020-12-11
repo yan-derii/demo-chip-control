@@ -10,6 +10,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
         MatCardModule,
         FormsModule,
         ReactiveFormsModule,
+        MatButtonModule,
     ],
   providers: [],
   bootstrap: [AppComponent]
