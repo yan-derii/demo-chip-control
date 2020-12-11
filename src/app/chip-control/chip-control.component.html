@@ -5,11 +5,19 @@
                 *ngFor="let item of items"
                 selectable
                 removable
+                (removed)="removeChip(item)"
         >
-            Something
-            <mat-icon>cancel</mat-icon>
+            {{ item }}
+            <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
-        <input type="text"/>
+        <input
+            #itemInput
+            [formControl]="itemInputControl"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="[13]"
+            (matChipInputTokenEnd)="addChip($event)"
+            placeholder="Type here..."
+        />
     </mat-chip-list>
     <mat-autocomplete>
         <mat-option>

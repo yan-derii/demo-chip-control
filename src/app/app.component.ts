@@ -5,7 +5,9 @@ import { Component } from '@angular/core';
   template: `
     <!--The content below is only a placeholder and can be replaced.-->
     <div class="content">
-      <app-chip-control></app-chip-control>
+      <mat-card>
+        <app-chip-control></app-chip-control>
+      </mat-card>
     </div>
 
   `,
