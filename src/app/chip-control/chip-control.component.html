@@ -1,0 +1,19 @@
+<mat-form-field class="chip-control">
+    <mat-label>Chip Control Demo</mat-label>
+    <mat-chip-list #chipList aria-label="Select items">
+        <mat-chip
+                *ngFor="let item of items"
+                selectable
+                removable
+        >
+            Something
+            <mat-icon>cancel</mat-icon>
+        </mat-chip>
+        <input type="text"/>
+    </mat-chip-list>
+    <mat-autocomplete>
+        <mat-option>
+            Something Two
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
